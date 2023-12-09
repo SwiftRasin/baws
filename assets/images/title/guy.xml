@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="guy.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Walking Suit0000" x="15" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0001" x="15" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0002" x="15" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0003" x="15" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0004" x="179" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0005" x="179" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0006" x="179" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0007" x="179" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0008" x="179" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0009" x="15" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0010" x="15" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0011" x="15" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0012" x="15" y="15" width="149" height="263"/>
+	<SubTexture name="Walking Suit0013" x="15" y="15" width="149" height="263"/>
+</TextureAtlas>
