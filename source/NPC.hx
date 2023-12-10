@@ -30,6 +30,9 @@ class NPC extends FlxSprite
 
 	override public function update(elapsed:Float)
 	{
+		FlxG.watch.add(this, "interactions");
+		// FlxG.watch.add(this, "y");
+
 		if (PlayState.instance.npc_check(this) == true)
 		{
 			if (interact != null && canInteract == true)

@@ -42,6 +42,7 @@ class Title extends FlxState
 	{
 		if (FlxG.keys.justPressed.ENTER)
 		{
+			PlayState.curStage = "shop";
 			FlxG.switchState(new PlayState());
 		}
 		super.update(elapsed);

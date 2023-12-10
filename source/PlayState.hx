@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.graphics.frames.FlxAtlasFrames as FunAtlas;
+import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -22,7 +23,9 @@ class PlayState extends FlxState
 
 	var debug_t:FlxText;
 
-	public static var curStage:String = "mountains";
+	public static var curStage:String = "shop";
+
+	var playerPos:FlxPoint;
 
 	override public function create()
 	{
@@ -34,13 +37,18 @@ class PlayState extends FlxState
 		// logo.animation.play("logo");
 		// add(logo);
 
+		playerPos = new FlxPoint(515, 400);
+
 		loadStage(curStage);
 
-		player = new Player(515, 400, "normal");
+		player = new Player(playerPos.x, playerPos.y, "normal");
 		add(player);
 
 		FlxG.camera.setScrollBoundsRect(0, 0, 1800, 720);
 		FlxG.camera.follow(player, TOPDOWN, 10);
+
+		var bubble = new NPC.Dialogue(520, 175, "normal");
+		add(bubble);
 
 		debug_t = new FlxText(550, 210, 0, "Hello?", 32);
 		// debug_t.screenCenter(X);
@@ -105,6 +113,44 @@ class PlayState extends FlxState
 				add(bg);
 				gnd = new FlxSprite(-100, 0).loadGraphic("assets/images/title/ground.png");
 				add(gnd);
+			case "shop":
+				playerPos.set(530, 445);
+
+				// FlxG.camera.setScrollBoundsRect(0, 0, 1800, 1800);
+
+				FlxG.sound.playMusic(Files.ost("Mountains"));
+
+				bg = new FlxSprite(0, 0).loadGraphic("assets/images/mountains/bg.png");
+				bg.scrollFactor.x = 0.05;
+				bg.screenCenter();
+				add(bg);
+
+				var wall = new FlxSprite(-80, -90).loadGraphic("assets/images/shop/bg.png");
+				wall.screenCenter();
+				add(wall);
+
+				var cashier = new NPC(1100, 450, "cashier", true);
+				cashier.interact = function()
+				{
+					switch (cashier.interactions)
+					{
+						case 1:
+							changeDebugTXT("...");
+						case 2:
+							cashier.playAnim("money");
+							changeDebugTXT("What would you like?");
+						case 3:
+							player.playAnim("smile");
+						case 4:
+							changeDebugTXT("[g]( I'm finally going to get [i]paid![i] )[g]");
+					}
+				}
+				add(cashier);
+
+				var desk = new FlxSprite(900, 520).loadGraphic("assets/images/shop/desk.png");
+				desk.screenCenter();
+				add(desk);
+
 			case "mountains":
 				FlxG.sound.playMusic(Files.ost("Mountains"));
 				bg = new FlxSprite(0, 0).loadGraphic("assets/images/mountains/bg.png");
@@ -136,8 +182,6 @@ class PlayState extends FlxState
 					}
 				}
 				add(nicky);
-				var bubble = new NPC.Dialogue(520, 175, "normal");
-				add(bubble);
 		}
 	}
 }

@@ -13,7 +13,7 @@ class BawsUtil
 		new FlxTextFormatMarkerPair(new FlxTextFormat(0xEDC00D, null, null, 0x7C6818), "[y]"), // Yellow
 		new FlxTextFormatMarkerPair(new FlxTextFormat(0x8A50AA, null, null, 0x5D3B70), "[p]"), // Purple
 		new FlxTextFormatMarkerPair(new FlxTextFormat(null, true, null, null), "[l]"), // Bold
-		new FlxTextFormatMarkerPair(new FlxTextFormat(null, null, true, null), "[i]"), // Italic
+		new FlxTextFormatMarkerPair(new FlxTextFormat(null, null, true), "[i]"), // Italic
 		new FlxTextFormatMarkerPair(new FlxTextFormat(0x6B0E0E, true, false, 0x260909), "⚠") // Maroon
 	];
 }
