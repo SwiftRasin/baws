@@ -8,13 +8,33 @@ class NPC extends FlxSprite
 {
 	var char:String = '';
 
-	public function new(x:Float, y:Float, char:String)
+	public var interact:Void->Void;
+	public var interactions:Float = 0;
+
+	public var canInteract:Bool = true;
+
+	public function new(x:Float, y:Float, char:String, canInteract:Bool = false, interact:Void->Void = null)
 	{
 		this.char = char;
+		this.canInteract = canInteract;
+		this.interact = interact;
 		super();
 		loadAssets();
 		this.x = x;
 		this.y = y;
+	}
+
+	override public function update(elapsed:Float)
+	{
+		if (PlayState.instance.npc_check(this) == true)
+		{
+			if (interact != null && canInteract == true)
+			{
+				interactions++;
+				interact();
+			}
+		}
+		super.update(elapsed);
 	}
 
 	public function playAnim(anim:String, force:Bool = false)
@@ -46,7 +66,8 @@ class NPC extends FlxSprite
 				playAnim('idle');
 			case 'nicky':
 				frames = Files.char('nicky');
-				animation.addByPrefix('idle', 'Nicky', 24, true);
+				animation.addByPrefix('idle', 'Nicky0', 24, true);
+				// the 0 is so that the animations doesn't play the other one too. it's weird as hell but it works.
 				animation.addByPrefix('happy', 'Nicky happy', 24, true);
 				playAnim('idle');
 		}

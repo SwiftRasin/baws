@@ -11,12 +11,14 @@ import flixel.util.FlxColor;
 
 class PlayState extends FlxState
 {
+	public static var instance:PlayState;
+
 	var bg:FlxSprite;
 
 	var gnd:FlxSprite;
 
 	// var logo:FlxSprite;
-	var bawsguy:Player;
+	var player:Player;
 
 	var debug_t:FlxText;
 
@@ -32,13 +34,13 @@ class PlayState extends FlxState
 
 		loadStage(curStage);
 
-		bawsguy = new Player(515, 400, "normal");
-		add(bawsguy);
+		player = new Player(515, 400, "normal");
+		add(player);
 
 		FlxG.camera.setScrollBoundsRect(0, 0, 1800, 720);
-		FlxG.camera.follow(bawsguy, TOPDOWN, 10);
+		FlxG.camera.follow(player, TOPDOWN, 10);
 
-		debug_t = new FlxText(0, 200, 0, "[b]Hi there![b] \n[r]I know where you live [r]\n[y]and I will soon [y]⚠end you and all of your friends.⚠");
+		debug_t = new FlxText(0, 200, 0, "Hello?");
 		debug_t.screenCenter(X);
 		debug_t.setFormat(32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		debug_t.borderSize = 4;
@@ -48,8 +50,23 @@ class PlayState extends FlxState
 		super.create();
 	}
 
+	function changeDebugTXT(txt:String)
+	{
+		debug_t.text = txt;
+		debug_t.applyMarkup(debug_t.text, BawsUtil.markup);
+	}
+
+	public function npc_check(npc):Bool
+	{
+		if (FlxG.overlap(npc, player) && FlxG.keys.anyJustPressed([SPACE, UP]))
+			return true;
+		else
+			return false;
+	}
+
 	override public function update(elapsed:Float)
 	{
+		instance = this;
 		if (FlxG.keys.justPressed.ENTER)
 		{
 			FlxG.switchState(new PlayState());
@@ -57,20 +74,20 @@ class PlayState extends FlxState
 
 		if (FlxG.keys.pressed.LEFT)
 		{
-			bawsguy.flipX = true;
-			bawsguy.playAnim("walk");
-			bawsguy.x -= 5;
+			player.flipX = true;
+			player.playAnim("walk");
+			player.x -= 5;
 		}
 		else if (FlxG.keys.pressed.RIGHT)
 		{
-			bawsguy.flipX = false;
-			bawsguy.playAnim("walk");
-			bawsguy.x += 5;
+			player.flipX = false;
+			player.playAnim("walk");
+			player.x += 5;
 		}
 		else
 		{
-			bawsguy.flipX = false;
-			bawsguy.playAnim("idle");
+			player.flipX = false;
+			player.playAnim("idle");
 		}
 
 		super.update(elapsed);
@@ -100,6 +117,18 @@ class PlayState extends FlxState
 				add(gnd);
 				var trail = new FlxSprite(-40, 620).loadGraphic("assets/images/mountains/trail.png");
 				add(trail);
+				var nicky = new NPC(785, 320, "nicky", true);
+				nicky.interact = function()
+				{
+					switch (nicky.interactions)
+					{
+						case 1:
+							changeDebugTXT("Hi!");
+						case 2:
+							changeDebugTXT("Are ⚠you⚠ [b][l]the player[l][b]?");
+					}
+				}
+				add(nicky);
 		}
 	}
 }
