@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="nicky.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Nicky happy0000" x="15" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky happy0001" x="15" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky happy0002" x="397" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky happy0003" x="397" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky happy0004" x="779" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky happy0005" x="779" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky happy0006" x="1161" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky happy0007" x="1161" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky happy0008" x="1543" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky happy0009" x="1543" y="15" width="367" height="340"/>
+	<SubTexture name="Nicky0000" x="15" y="370" width="325" height="340"/>
+	<SubTexture name="Nicky0001" x="15" y="370" width="325" height="340"/>
+	<SubTexture name="Nicky0002" x="355" y="370" width="325" height="340"/>
+	<SubTexture name="Nicky0003" x="355" y="370" width="325" height="340"/>
+	<SubTexture name="Nicky0004" x="695" y="370" width="325" height="340"/>
+	<SubTexture name="Nicky0005" x="695" y="370" width="325" height="340"/>
+	<SubTexture name="Nicky0006" x="1035" y="370" width="325" height="340"/>
+	<SubTexture name="Nicky0007" x="1375" y="370" width="325" height="340"/>
+	<SubTexture name="Nicky0008" x="15" y="725" width="325" height="340"/>
+	<SubTexture name="Nicky0009" x="15" y="725" width="325" height="340"/>
+</TextureAtlas>
