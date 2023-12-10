@@ -17,11 +17,20 @@ class NPC extends FlxSprite
 
 	public var offsets:Map<String, FlxPoint>;
 
-	public function new(x:Float, y:Float, char:String, canInteract:Bool = false, interact:Void->Void = null)
+	public var radius:FlxPoint;
+
+	public var extraHitBox:FlxSprite;
+
+	public function new(x:Float, y:Float, char:String, canInteract:Bool = false, interact:Void->Void = null, radius:FlxPoint = null)
 	{
 		this.char = char;
 		this.canInteract = canInteract;
 		this.interact = interact;
+		this.radius = radius;
+		if (radius == null)
+		{
+			this.radius = new FlxPoint(0, 0);
+		}
 		super();
 		loadAssets();
 		this.x = x;
@@ -105,6 +114,9 @@ class NPC extends FlxSprite
 					});
 			}
 		}
+		extraHitBox = new FlxSprite(0, 0).makeGraphic(Std.int(radius.x), Std.int(radius.y), flixel.util.FlxColor.TRANSPARENT);
+		PlayState.instance.add(extraHitBox);
+		extraHitBox.setPosition(this.x + this.width / 2, this.y + this.height / 2);
 	}
 }
 

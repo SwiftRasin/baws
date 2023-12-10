@@ -68,7 +68,7 @@ class PlayState extends FlxState
 
 	public function npc_check(npc):Bool
 	{
-		if (FlxG.overlap(npc, player) && FlxG.keys.anyJustPressed([SPACE, UP]))
+		if (FlxG.overlap(npc.extraHitBox, player) && FlxG.keys.anyJustPressed([SPACE, UP]))
 			return true;
 		else
 			return false;
@@ -147,7 +147,7 @@ class PlayState extends FlxState
 				}
 				add(cashier);
 
-				var desk = new FlxSprite(900, 520).loadGraphic("assets/images/shop/desk.png");
+				var desk = new FlxSprite(-80, -120).loadGraphic("assets/images/shop/Cashier Desk.png");
 				desk.screenCenter();
 				add(desk);
 
