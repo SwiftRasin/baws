@@ -127,7 +127,7 @@ class PlayState extends FlxState
 						case 1:
 							changeDebugTXT("Hi!");
 						case 2:
-							changeDebugTXT("Are ⚠you⚠ [b][l]the player[l][b]?");
+							changeDebugTXT("Are ⚠you⚠ [b]the player[b]?");
 					}
 				}
 				add(nicky);
