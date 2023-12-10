@@ -11,6 +11,7 @@ class Files
 	public static function setDefaultFont(font:String)
 	{
 		FlxAssets.FONT_DEFAULT = font;
+		FlxAssets.FONT_DEBUGGER = font;
 	}
 
 	public static function xml(file_path:String)

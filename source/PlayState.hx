@@ -42,7 +42,7 @@ class PlayState extends FlxState
 		FlxG.camera.setScrollBoundsRect(0, 0, 1800, 720);
 		FlxG.camera.follow(player, TOPDOWN, 10);
 
-		debug_t = new FlxText(550, 210, 0, "Hello?");
+		debug_t = new FlxText(550, 210, 0, "Hello?", 32);
 		// debug_t.screenCenter(X);
 		debug_t.setFormat(32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		debug_t.borderSize = 4;
