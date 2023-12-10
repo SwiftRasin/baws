@@ -73,3 +73,45 @@ class NPC extends FlxSprite
 		}
 	}
 }
+
+class Dialogue extends FlxSprite
+{
+	var type:String = "";
+
+	public function new(x:Float, y:Float, type:String)
+	{
+		this.type = type;
+		super();
+		loadAssets();
+		this.x = x;
+		this.y = y;
+	}
+
+	public function playAnim(anim:String, force:Bool = false)
+	{
+		if (animation.name == null)
+		{
+			force = true;
+		}
+		if (force)
+			animation.play(anim);
+		else
+		{
+			if (animation.name != anim)
+			{
+				animation.play(anim);
+			}
+		}
+	}
+
+	function loadAssets()
+	{
+		switch (type)
+		{
+			case 'normal':
+				frames = Files.dialogue('bubble'); // FlxAtlasFrames.fromSparrow("assets/images/character/normal.png","assets/images/character/normal.xml");// Files.xml("assets/images/character/normal");// = Files.char('normal');
+				animation.addByPrefix('idle', 'speech bubble', 24, true);
+				playAnim('idle');
+		}
+	}
+}

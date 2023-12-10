@@ -26,6 +26,8 @@ class PlayState extends FlxState
 
 	override public function create()
 	{
+		FlxG.watch.add(FlxG.mouse, "x");
+		FlxG.watch.add(FlxG.mouse, "y");
 		// logo = new FlxSprite(250,80);
 		// logo.frames = Files.xml("assets/images/title/logo");
 		// logo.animation.addByPrefix("logo","Basically A Walking Simulator");
@@ -40,8 +42,8 @@ class PlayState extends FlxState
 		FlxG.camera.setScrollBoundsRect(0, 0, 1800, 720);
 		FlxG.camera.follow(player, TOPDOWN, 10);
 
-		debug_t = new FlxText(0, 200, 0, "Hello?");
-		debug_t.screenCenter(X);
+		debug_t = new FlxText(550, 210, 0, "Hello?");
+		// debug_t.screenCenter(X);
 		debug_t.setFormat(32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		debug_t.borderSize = 4;
 		debug_t.applyMarkup(debug_t.text, BawsUtil.markup);
@@ -129,6 +131,8 @@ class PlayState extends FlxState
 					}
 				}
 				add(nicky);
+				var bubble = new NPC.Dialogue(520, 175, "normal");
+				add(bubble);
 		}
 	}
 }
