@@ -52,14 +52,16 @@ class Player extends FlxSprite
 				animation.addByPrefix('idle', 'Idle Suit', 24, true);
 				animation.addByPrefix('walk', 'Walking Suit', 24, true);
 				animation.addByPrefix('jump', 'Jump Suit', 24, true);
+				animation.addByPrefix('shock', 'shock!', 24, false);
+				animation.addByPrefix('smile', 'smile', 24, false);
 				playAnim('idle');
 		}
 		animation.finishCallback = function(anim:String)
 		{
 			switch (anim)
 			{
-				case "walk":
-				// do nothing
+				case /*"walk" | */ "idle" | "jump":
+				// 		do nothing
 				default:
 					new FlxTimer().start(0.5, function(tmr:FlxTimer)
 					{

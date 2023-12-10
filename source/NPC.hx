@@ -3,6 +3,8 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.math.FlxPoint;
+import flixel.util.FlxTimer;
 
 class NPC extends FlxSprite
 {
@@ -12,6 +14,8 @@ class NPC extends FlxSprite
 	public var interactions:Float = 0;
 
 	public var canInteract:Bool = true;
+
+	public var offsets:Map<String, FlxPoint>;
 
 	public function new(x:Float, y:Float, char:String, canInteract:Bool = false, interact:Void->Void = null)
 	{
@@ -40,15 +44,17 @@ class NPC extends FlxSprite
 	public function playAnim(anim:String, force:Bool = false)
 	{
 		if (animation.name == null)
-		{
 			force = true;
-		}
 		if (force)
+		{
+			offset.set(offsets[anim].x, offsets[anim].y);
 			animation.play(anim);
+		}
 		else
 		{
 			if (animation.name != anim)
 			{
+				offset.set(offsets[anim].x, offsets[anim].y);
 				animation.play(anim);
 			}
 		}
@@ -67,9 +73,34 @@ class NPC extends FlxSprite
 			case 'nicky':
 				frames = Files.char('nicky');
 				animation.addByPrefix('idle', 'Nicky0', 24, true);
-				// the 0 is so that the animations doesn't play the other one too. it's weird as hell but it works.
+				// the 0 is so that the animation doesn't play the happy anim as well. it's weird as hell but it works.
 				animation.addByPrefix('happy', 'Nicky happy', 24, true);
+
+				offsets = ["idle" => new FlxPoint(0, 0), "happy" => new FlxPoint(40, 0)];
 				playAnim('idle');
+
+			case 'cashier':
+				frames = Files.char('cashier');
+				animation.addByPrefix('idle', 'Cashier Idle', 24, true);
+				animation.addByPrefix('money', 'Cashier MONEY???', 24, true);
+				animation.addByPrefix('scared-start', 'Cashier money transition', 24, false);
+				animation.addByPrefix('scared-loop', 'scared', 24, true);
+
+				offsets = ["idle" => new FlxPoint(0, 0), "money" => new FlxPoint(/*38*/ 0, 0)];
+				playAnim('idle');
+		}
+		animation.finishCallback = function(anim:String)
+		{
+			switch (anim)
+			{
+				case "happy" | "doodoo":
+				// 		do nothing
+				default:
+					new FlxTimer().start(0.5, function(tmr:FlxTimer)
+					{
+						playAnim("idle");
+					});
+			}
 		}
 	}
 }

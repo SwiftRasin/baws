@@ -86,7 +86,7 @@ class PlayState extends FlxState
 			player.playAnim("walk");
 			player.x += 5;
 		}
-		else
+		else if (player.animation.curAnim.name == "walk")
 		{
 			player.flipX = false;
 			player.playAnim("idle");
@@ -119,7 +119,7 @@ class PlayState extends FlxState
 				add(gnd);
 				var trail = new FlxSprite(-40, 620).loadGraphic("assets/images/mountains/trail.png");
 				add(trail);
-				var nicky = new NPC(785, 320, "nicky", true);
+				var nicky = new NPC(785, 325, "nicky", true);
 				nicky.interact = function()
 				{
 					switch (nicky.interactions)
@@ -128,6 +128,11 @@ class PlayState extends FlxState
 							changeDebugTXT("Hi!");
 						case 2:
 							changeDebugTXT("Are ⚠you⚠ [p]the player[p]?");
+						case 3:
+							player.playAnim("smile");
+						case 4:
+							nicky.playAnim("happy");
+							changeDebugTXT("Oh! That's pretty cool.");
 					}
 				}
 				add(nicky);
