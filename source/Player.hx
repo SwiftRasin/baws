@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.util.FlxTimer;
 
 class Player extends FlxSprite
 {
@@ -52,6 +53,19 @@ class Player extends FlxSprite
 				animation.addByPrefix('walk', 'Walking Suit', 24, true);
 				animation.addByPrefix('jump', 'Jump Suit', 24, true);
 				playAnim('idle');
+		}
+		animation.finishCallback = function(anim:String)
+		{
+			switch (anim)
+			{
+				case "walk":
+				// do nothing
+				default:
+					new FlxTimer().start(0.5, function(tmr:FlxTimer)
+					{
+						playAnim("idle");
+					});
+			}
 		}
 	}
 }
