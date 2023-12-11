@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="fancy.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="speech bubble0000" x="15" y="15" width="528" height="256"/>
+	<SubTexture name="speech bubble0001" x="15" y="15" width="528" height="256"/>
+	<SubTexture name="speech bubble0002" x="15" y="286" width="528" height="256"/>
+	<SubTexture name="speech bubble0003" x="15" y="286" width="528" height="256"/>
+</TextureAtlas>

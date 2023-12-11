@@ -16,4 +16,5 @@ class BawsUtil
 		new FlxTextFormatMarkerPair(new FlxTextFormat(null, null, true), "[i]"), // Italic
 		new FlxTextFormatMarkerPair(new FlxTextFormat(0x6B0E0E, true, false, 0x260909), "⚠") // Maroon
 	];
+	public static var diaBlue:Dynamic = 0xFF3366CC;
 }

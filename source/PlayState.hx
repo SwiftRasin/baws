@@ -1,14 +1,18 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.graphics.frames.FlxAtlasFrames as FunAtlas;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
 
 class PlayState extends FlxState
 {
@@ -27,6 +31,12 @@ class PlayState extends FlxState
 
 	var playerPos:FlxPoint;
 
+	var stageBounds:Array<FlxPoint> = [];
+
+	var bubble:NPC.Dialogue;
+
+	var bubbleDialogue:String = "";
+
 	override public function create()
 	{
 		FlxG.watch.add(FlxG.mouse, "x");
@@ -38,6 +48,7 @@ class PlayState extends FlxState
 		// add(logo);
 
 		playerPos = new FlxPoint(515, 400);
+		stageBounds = [new FlxPoint(0, 0), new FlxPoint(1800, 720)];
 
 		loadStage(curStage);
 
@@ -47,31 +58,64 @@ class PlayState extends FlxState
 		FlxG.camera.setScrollBoundsRect(0, 0, 1800, 720);
 		FlxG.camera.follow(player, TOPDOWN, 10);
 
-		var bubble = new NPC.Dialogue(520, 175, "normal");
+		bubble = new NPC.Dialogue(520, 175, "fancy");
 		add(bubble);
+		bubble.alpha = 0.1;
+		bubble.color = BawsUtil.diaBlue;
 
-		debug_t = new FlxText(550, 210, 0, "Hello?", 32);
+		debug_t = new FlxText(550, 210, 480, bubbleDialogue, 32);
 		// debug_t.screenCenter(X);
-		debug_t.setFormat(32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		debug_t.setFormat(32, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 		debug_t.borderSize = 4;
 		debug_t.applyMarkup(debug_t.text, BawsUtil.markup);
+		debug_t.alpha = 0.1;
 		add(debug_t);
 
 		super.create();
 	}
 
+	public function setSpeechPos(x:Float, y:Float = 175)
+	{
+		bubble.x = x;
+		debug_t.x = x + 30;
+		bubble.y = y;
+		debug_t.y = y + 25;
+	}
+
 	function changeDebugTXT(txt:String)
 	{
-		debug_t.text = txt;
-		debug_t.applyMarkup(debug_t.text, BawsUtil.markup);
+		if (debug_t != null)
+		{
+			debug_t.text = txt;
+			debug_t.applyMarkup(debug_t.text, BawsUtil.markup);
+		}
+		bubbleDialogue = txt;
 	}
 
 	public function npc_check(npc):Bool
 	{
-		if (FlxG.overlap(npc.extraHitBox, player) && FlxG.keys.anyJustPressed([SPACE, UP]))
+		if (FlxG.overlap(npc, player) || FlxG.mouse.overlaps(npc))
 			return true;
 		else
 			return false;
+	}
+
+	public function move(amt:Float):Bool // did you successfully move?
+	{
+		var successful = true;
+		player.x += amt;
+
+		if (player.x > stageBounds[1].x)
+		{
+			successful = false;
+			player.x -= amt;
+		}
+		if (player.x < stageBounds[0].x)
+		{
+			successful = false;
+			player.x -= amt;
+		}
+		return successful;
 	}
 
 	override public function update(elapsed:Float)
@@ -82,17 +126,15 @@ class PlayState extends FlxState
 			FlxG.switchState(new PlayState());
 		}
 
-		if (FlxG.keys.pressed.LEFT)
+		if (FlxG.keys.pressed.LEFT && move(-5))
 		{
 			player.flipX = true;
 			player.playAnim("walk");
-			player.x -= 5;
 		}
-		else if (FlxG.keys.pressed.RIGHT)
+		else if (FlxG.keys.pressed.RIGHT && move(5))
 		{
 			player.flipX = false;
 			player.playAnim("walk");
-			player.x += 5;
 		}
 		else if (player.animation.curAnim.name == "walk")
 		{
@@ -101,6 +143,25 @@ class PlayState extends FlxState
 		}
 
 		super.update(elapsed);
+	}
+
+	public function bubbleFadeIn()
+	{
+		new FlxTimer().start(0.025, function(tmr:FlxTimer)
+		{
+			if (bubble.alpha < 1)
+			{
+				debug_t.alpha += 0.1;
+				bubble.alpha += 0.1;
+				tmr.reset();
+			}
+		});
+	}
+
+	public function bubbleFadeColor(time:Float, color:FlxColor)
+	{
+		FlxTween.completeTweensOf(bubble);
+		FlxTween.color(bubble, time, bubble.color, color, {type: FlxTweenType.ONESHOT, ease: FlxEase.cubeInOut});
 	}
 
 	public function loadStage(id:String)
@@ -116,6 +177,9 @@ class PlayState extends FlxState
 			case "shop":
 				playerPos.set(530, 445);
 
+				stageBounds[0].set(0, 0);
+				stageBounds[1].set(735, 720);
+
 				// FlxG.camera.setScrollBoundsRect(0, 0, 1800, 1800);
 
 				FlxG.sound.playMusic(Files.ost("Mountains"));
@@ -129,26 +193,28 @@ class PlayState extends FlxState
 				wall.screenCenter();
 				add(wall);
 
-				var cashier = new NPC(1100, 450, "cashier", true);
+				changeDebugTXT("...");
+
+				var cashier = new NPC(1080, 450, "cashier", true);
 				cashier.interact = function()
 				{
 					switch (cashier.interactions)
 					{
 						case 1:
-							changeDebugTXT("...");
-						case 2:
+							bubbleFadeIn();
 							cashier.playAnim("money");
-							changeDebugTXT("What would you like?");
-						case 3:
+							changeDebugTXT("What would you like\n today?");
+						case 2:
 							player.playAnim("smile");
-						case 4:
-							changeDebugTXT("[g]( I'm finally going to get [i]paid![i] )[g]");
+						case 3:
+							bubbleFadeColor(0.5, FlxColor.LIME);
+							changeDebugTXT("[g]( YES! I'm finally going to get [i]paid![i] )[g]");
 					}
 				}
 				add(cashier);
 
-				var desk = new FlxSprite(-80, -120).loadGraphic("assets/images/shop/Cashier Desk.png");
-				desk.screenCenter();
+				var desk = new FlxSprite(-50, -80).loadGraphic("assets/images/shop/Cashier Desk.png");
+				// desk.screenCenter();
 				add(desk);
 
 			case "mountains":
@@ -171,6 +237,7 @@ class PlayState extends FlxState
 					switch (nicky.interactions)
 					{
 						case 1:
+							bubbleFadeIn();
 							changeDebugTXT("Hi!");
 						case 2:
 							changeDebugTXT("Are ⚠you⚠ [p]the player[p]?");

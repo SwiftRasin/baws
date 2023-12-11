@@ -19,18 +19,11 @@ class NPC extends FlxSprite
 
 	public var radius:FlxPoint;
 
-	public var extraHitBox:FlxSprite;
-
-	public function new(x:Float, y:Float, char:String, canInteract:Bool = false, interact:Void->Void = null, radius:FlxPoint = null)
+	public function new(x:Float, y:Float, char:String, canInteract:Bool = false, interact:Void->Void = null)
 	{
 		this.char = char;
 		this.canInteract = canInteract;
 		this.interact = interact;
-		this.radius = radius;
-		if (radius == null)
-		{
-			this.radius = new FlxPoint(0, 0);
-		}
 		super();
 		loadAssets();
 		this.x = x;
@@ -42,7 +35,7 @@ class NPC extends FlxSprite
 		FlxG.watch.add(this, "interactions");
 		// FlxG.watch.add(this, "y");
 
-		if (PlayState.instance.npc_check(this) == true)
+		if (PlayState.instance.npc_check(this) && (FlxG.keys.anyJustPressed([UP, SPACE]) || FlxG.mouse.justPressed))
 		{
 			if (interact != null && canInteract == true)
 			{
@@ -114,9 +107,6 @@ class NPC extends FlxSprite
 					});
 			}
 		}
-		extraHitBox = new FlxSprite(0, 0).makeGraphic(Std.int(radius.x), Std.int(radius.y), flixel.util.FlxColor.TRANSPARENT);
-		PlayState.instance.add(extraHitBox);
-		extraHitBox.setPosition(this.x + this.width / 2, this.y + this.height / 2);
 	}
 }
 
@@ -154,8 +144,8 @@ class Dialogue extends FlxSprite
 	{
 		switch (type)
 		{
-			case 'normal':
-				frames = Files.dialogue('bubble'); // FlxAtlasFrames.fromSparrow("assets/images/character/normal.png","assets/images/character/normal.xml");// Files.xml("assets/images/character/normal");// = Files.char('normal');
+			default:
+				frames = Files.dialogue(type); // FlxAtlasFrames.fromSparrow("assets/images/character/normal.png","assets/images/character/normal.xml");// Files.xml("assets/images/character/normal");// = Files.char('normal');
 				animation.addByPrefix('idle', 'speech bubble', 24, true);
 				playAnim('idle');
 		}
