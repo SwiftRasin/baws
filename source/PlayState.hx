@@ -37,6 +37,8 @@ class PlayState extends FlxState
 
 	var bubbleDialogue:String = "";
 
+	var arrow:NPC.Arrow;
+
 	override public function create()
 	{
 		FlxG.watch.add(FlxG.mouse, "x");
@@ -62,6 +64,13 @@ class PlayState extends FlxState
 		add(bubble);
 		bubble.alpha = 0.1;
 		bubble.color = BawsUtil.diaBlue;
+
+		arrow = new NPC.Arrow(520 + (bubble.width / 2), 175 - (bubble.height / 1.5), "arrow");
+		add(arrow);
+		// arrow.screenCenter();
+		arrow.alpha = 0.1;
+		arrow.color = BawsUtil.diaBlue;
+		arrow.x -= arrow.width / 2;
 
 		debug_t = new FlxText(550, 210, 480, bubbleDialogue, 32);
 		// debug_t.screenCenter(X);
@@ -153,6 +162,7 @@ class PlayState extends FlxState
 			{
 				debug_t.alpha += 0.1;
 				bubble.alpha += 0.1;
+				arrow.alpha += 0.1;
 				tmr.reset();
 			}
 		});
@@ -161,7 +171,19 @@ class PlayState extends FlxState
 	public function bubbleFadeColor(time:Float, color:FlxColor)
 	{
 		FlxTween.completeTweensOf(bubble);
+		FlxTween.completeTweensOf(arrow);
 		FlxTween.color(bubble, time, bubble.color, color, {type: FlxTweenType.ONESHOT, ease: FlxEase.cubeInOut});
+		FlxTween.color(arrow, time, arrow.color, color, {type: FlxTweenType.ONESHOT, ease: FlxEase.cubeInOut});
+	}
+
+	public function arrowMove(time:Float, pos:FlxPoint)
+	{
+		FlxTween.tween(arrow, {x: pos.x, y: pos.y}, time, {ease: FlxEase.sineOut});
+	}
+
+	public function spr_pos(spr:FlxSprite):FlxPoint
+	{
+		return new FlxPoint((spr.x + spr.width / 2) - arrow.width / 2, ((spr.y + spr.height / 2) - 200));
 	}
 
 	public function timeout(time:Float, func:Void->Void):FlxTimer
@@ -214,11 +236,16 @@ class PlayState extends FlxState
 						case 1:
 							bubbleFadeIn();
 							cashier.playAnim("money");
+							arrowMove(0.5, spr_pos(cashier));
 							changeDebugTXT("What would you like\n today?");
 						case 2:
+							bubbleFadeColor(0.3, 0xFFBF6363);
+							arrowMove(0.5, spr_pos(player));
+							changeDebugTXT("");
 							player.playAnim("smile");
 						case 3:
-							bubbleFadeColor(0.5, FlxColor.LIME);
+							bubbleFadeColor(0.3, FlxColor.LIME);
+							arrowMove(0.5, spr_pos(cashier));
 							changeDebugTXT("[g]( YES! I'm finally going to get [i]paid![i] )[g]");
 					}
 				}
@@ -253,16 +280,16 @@ class PlayState extends FlxState
 						case 2:
 							changeDebugTXT("Have you seen anyone around named [p]Kulnamlo[p]?");
 						case 3:
-							bubbleFadeColor(1, 0xFF4b1818);
+							bubbleFadeColor(0.2, 0xFF4b1818);
 							changeDebugTXT("Stay away from him. He's done some pretty bad things.");
 							player.playAnim("shock");
 						case 4:
-							player.playAnim("sus");
-							/*timeout(5, function()
+							player.playAnim("idle");
+							/*
+								timeout(5, function()
 								{
 									player.playAnim("idle");
-							});*/
-							bubbleFadeColor(1, BawsUtil.diaBlue);
+							});*/ bubbleFadeColor(1, BawsUtil.diaBlue);
 							nicky.playAnim("happy");
 							changeDebugTXT("Just kidding. He's pretty cool if you get to know him.");
 					}

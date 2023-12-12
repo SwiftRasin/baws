@@ -35,14 +35,16 @@ class Player extends FlxSprite
 			force = true;
 		if (force)
 		{
-			offset.set(offsets[anim].x, offsets[anim].y);
+			if (offsets[anim] != null)
+				offset.set(offsets[anim].x, offsets[anim].y);
 			animation.play(anim);
 		}
 		else
 		{
 			if (animation.name != anim)
 			{
-				offset.set(offsets[anim].x, offsets[anim].y);
+				if (offsets[anim] != null)
+					offset.set(offsets[anim].x, offsets[anim].y);
 				animation.play(anim);
 			}
 		}
@@ -60,20 +62,17 @@ class Player extends FlxSprite
 				animation.addByPrefix('shock', 'shock!', 24, false);
 				animation.addByPrefix('smile', 'smile', 24, false);
 				animation.addByPrefix('sus', 'runningg', 24, false);
+
+				offsets = ["idle" => new FlxPoint(0, 0), "shock" => new FlxPoint(0, 52)];
+
 				playAnim('idle');
-				offsets = ["idle" => new FlxPoint(0, 0), "shock" => new FlxPoint(27, 52)];
 		}
 		animation.finishCallback = function(anim:String)
 		{
 			switch (anim)
 			{
-				case /*"walk" | */ "idle" | "jump" | "shock":
+				case /*"walk" | */ "idle" | "jump" | "sus" | "shock":
 				// 		do nothing
-				case "shock":
-					new FlxTimer().start(3, function(tmr:FlxTimer)
-					{
-						playAnim("idle");
-					});
 				default:
 					new FlxTimer().start(0.5, function(tmr:FlxTimer)
 					{
