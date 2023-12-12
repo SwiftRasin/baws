@@ -39,6 +39,8 @@ class PlayState extends FlxState
 
 	var arrow:NPC.Arrow;
 
+	var haveDia:Bool = true;
+
 	override public function create()
 	{
 		FlxG.watch.add(FlxG.mouse, "x");
@@ -79,6 +81,13 @@ class PlayState extends FlxState
 		debug_t.applyMarkup(debug_t.text, BawsUtil.markup);
 		debug_t.alpha = 0.1;
 		add(debug_t);
+
+		if (!haveDia)
+		{
+			debug_t.visible = false;
+			bubble.visible = false;
+			arrow.visible = false;
+		}
 
 		super.create();
 	}
