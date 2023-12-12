@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
 
 class Player extends FlxSprite
@@ -17,6 +18,8 @@ class Player extends FlxSprite
 		]; */ // old unused stuff from other game
 	var char:String = '';
 
+	public var offsets:Map<String, FlxPoint>;
+
 	public function new(x:Float, y:Float, char:String)
 	{
 		this.char = char;
@@ -29,15 +32,17 @@ class Player extends FlxSprite
 	public function playAnim(anim:String, force:Bool = false)
 	{
 		if (animation.name == null)
-		{
 			force = true;
-		}
 		if (force)
+		{
+			offset.set(offsets[anim].x, offsets[anim].y);
 			animation.play(anim);
+		}
 		else
 		{
 			if (animation.name != anim)
 			{
+				offset.set(offsets[anim].x, offsets[anim].y);
 				animation.play(anim);
 			}
 		}
@@ -54,14 +59,21 @@ class Player extends FlxSprite
 				animation.addByPrefix('jump', 'Jump Suit', 24, true);
 				animation.addByPrefix('shock', 'shock!', 24, false);
 				animation.addByPrefix('smile', 'smile', 24, false);
+				animation.addByPrefix('sus', 'runningg', 24, false);
 				playAnim('idle');
+				offsets = ["idle" => new FlxPoint(0, 0), "shock" => new FlxPoint(27, 52)];
 		}
 		animation.finishCallback = function(anim:String)
 		{
 			switch (anim)
 			{
-				case /*"walk" | */ "idle" | "jump":
+				case /*"walk" | */ "idle" | "jump" | "shock":
 				// 		do nothing
+				case "shock":
+					new FlxTimer().start(3, function(tmr:FlxTimer)
+					{
+						playAnim("idle");
+					});
 				default:
 					new FlxTimer().start(0.5, function(tmr:FlxTimer)
 					{

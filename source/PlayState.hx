@@ -164,6 +164,17 @@ class PlayState extends FlxState
 		FlxTween.color(bubble, time, bubble.color, color, {type: FlxTweenType.ONESHOT, ease: FlxEase.cubeInOut});
 	}
 
+	public function timeout(time:Float, func:Void->Void):FlxTimer
+	{
+		var timer:FlxTimer;
+		new FlxTimer().start(time, function(tmr:FlxTimer)
+		{
+			func();
+			timer = tmr;
+		});
+		return timer;
+	}
+
 	public function loadStage(id:String)
 	{
 		switch (id)
@@ -213,7 +224,7 @@ class PlayState extends FlxState
 				}
 				add(cashier);
 
-				var desk = new FlxSprite(-50, -80).loadGraphic("assets/images/shop/Cashier Desk.png");
+				var desk = new FlxSprite(-50, -100).loadGraphic("assets/images/shop/Cashier Desk.png");
 				// desk.screenCenter();
 				add(desk);
 
@@ -238,14 +249,22 @@ class PlayState extends FlxState
 					{
 						case 1:
 							bubbleFadeIn();
-							changeDebugTXT("Hi!");
+							changeDebugTXT("Hey..");
 						case 2:
-							changeDebugTXT("Are ⚠you⚠ [p]the player[p]?");
+							changeDebugTXT("Have you seen anyone around named [p]Kulnamlo[p]?");
 						case 3:
-							player.playAnim("smile");
+							bubbleFadeColor(1, 0xFF4b1818);
+							changeDebugTXT("Stay away from him. He's done some pretty bad things.");
+							player.playAnim("shock");
 						case 4:
+							player.playAnim("sus");
+							/*timeout(5, function()
+								{
+									player.playAnim("idle");
+							});*/
+							bubbleFadeColor(1, BawsUtil.diaBlue);
 							nicky.playAnim("happy");
-							changeDebugTXT("Oh! That's pretty cool.");
+							changeDebugTXT("Just kidding. He's pretty cool if you get to know him.");
 					}
 				}
 				add(nicky);

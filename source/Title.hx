@@ -42,7 +42,7 @@ class Title extends FlxState
 	{
 		if (FlxG.keys.justPressed.ENTER)
 		{
-			PlayState.curStage = "shop";
+			PlayState.curStage = "mountains";
 			FlxG.switchState(new PlayState());
 		}
 		super.update(elapsed);
