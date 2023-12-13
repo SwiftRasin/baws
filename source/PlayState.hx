@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.ui.FlxUINumericStepper as Stepper;
 import flixel.graphics.frames.FlxAtlasFrames as FunAtlas;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText;
@@ -41,10 +42,17 @@ class PlayState extends FlxState
 
 	var haveDia:Bool = true;
 
+	var shoes:Bool = true;
+
+	var loaded:Bool = false;
+
+	var tasks:Array<Dynamic> = [];
+
 	override public function create()
 	{
 		FlxG.watch.add(FlxG.mouse, "x");
 		FlxG.watch.add(FlxG.mouse, "y");
+
 		// logo = new FlxSprite(250,80);
 		// logo.frames = Files.xml("assets/images/title/logo");
 		// logo.animation.addByPrefix("logo","Basically A Walking Simulator");
@@ -59,9 +67,6 @@ class PlayState extends FlxState
 		player = new Player(playerPos.x, playerPos.y, "normal");
 		add(player);
 
-		FlxG.camera.setScrollBoundsRect(0, 0, 1800, 720);
-		FlxG.camera.follow(player, TOPDOWN, 10);
-
 		bubble = new NPC.Dialogue(520, 175, "fancy");
 		add(bubble);
 		bubble.alpha = 0.1;
@@ -73,6 +78,7 @@ class PlayState extends FlxState
 		arrow.alpha = 0.1;
 		arrow.color = BawsUtil.diaBlue;
 		arrow.x -= arrow.width / 2;
+		arrow.blend = "invert";
 
 		debug_t = new FlxText(550, 210, 480, bubbleDialogue, 32);
 		// debug_t.screenCenter(X);
@@ -89,7 +95,21 @@ class PlayState extends FlxState
 			arrow.visible = false;
 		}
 
+		// var overlay = new FlxSprite(0, 0).makeGraphic(1280, 720, 0xFF464ABD);
+		// overlay.blend = "overlay";
+		// add(overlay);
+
 		super.create();
+
+		FlxG.watch.add(player, "speed");
+
+		FlxG.camera.setScrollBoundsRect(0, 0, stageBounds[1].x, stageBounds[1].y);
+		FlxG.camera.follow(player, TOPDOWN, 10);
+
+		for (i in 0...tasks.length)
+		{
+			tasks[i]();
+		}
 	}
 
 	public function setSpeechPos(x:Float, y:Float = 175)
@@ -121,17 +141,35 @@ class PlayState extends FlxState
 	public function move(amt:Float):Bool // did you successfully move?
 	{
 		var successful = true;
-		player.x += amt;
+		if (shoes)
+		{
+			player.x += amt + player.speed;
 
-		if (player.x > stageBounds[1].x)
-		{
-			successful = false;
-			player.x -= amt;
+			if (player.x > stageBounds[1].x)
+			{
+				successful = false;
+				player.x -= (amt + player.speed);
+			}
+			if (player.x < stageBounds[0].x)
+			{
+				successful = false;
+				player.x -= (amt + player.speed);
+			}
 		}
-		if (player.x < stageBounds[0].x)
+		else
 		{
-			successful = false;
-			player.x -= amt;
+			player.x += amt;
+
+			if (player.x > stageBounds[1].x)
+			{
+				successful = false;
+				player.x -= amt;
+			}
+			if (player.x < stageBounds[0].x)
+			{
+				successful = false;
+				player.x -= amt;
+			}
 		}
 		return successful;
 	}
@@ -139,6 +177,7 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		instance = this;
+
 		if (FlxG.keys.justPressed.ENTER)
 		{
 			FlxG.switchState(new PlayState());
@@ -148,16 +187,25 @@ class PlayState extends FlxState
 		{
 			player.flipX = true;
 			player.playAnim("walk");
+			if (player.speed > -player.cap)
+				player.speed -= (player.inc);
+			if (player.speed < -player.cap)
+				player.speed = -player.cap;
 		}
 		else if (FlxG.keys.pressed.RIGHT && move(5))
 		{
 			player.flipX = false;
 			player.playAnim("walk");
+			if (player.speed < player.cap)
+				player.speed += (player.inc);
+			if (player.speed > player.cap)
+				player.speed = player.cap;
 		}
-		else if (player.animation.curAnim.name == "walk")
+		else // if (player.animation.curAnim.name == "walk")
 		{
 			player.flipX = false;
 			player.playAnim("idle");
+			player.speed = 0;
 		}
 
 		super.update(elapsed);
@@ -206,6 +254,17 @@ class PlayState extends FlxState
 		return timer;
 	}
 
+	public function travel(area:String)
+	{
+		curStage = area;
+		FlxG.resetState();
+	}
+
+	public function afterLoad(func:Void->Void)
+	{
+		tasks.push(func);
+	}
+
 	public function loadStage(id:String)
 	{
 		switch (id)
@@ -216,6 +275,47 @@ class PlayState extends FlxState
 				add(bg);
 				gnd = new FlxSprite(-100, 0).loadGraphic("assets/images/title/ground.png");
 				add(gnd);
+			case "run-cutscene":
+				FlxG.sound.playMusic(Files.ost("Fields - New Beginnings"));
+				bg = new FlxSprite(0, 0).loadGraphic("assets/images/title/bg.png");
+				bg.scrollFactor.set(0, 0);
+				add(bg);
+				gnd = new FlxSprite(-100, 0).loadGraphic("assets/images/title/ground.png");
+				add(gnd);
+				for (i in 0...500)
+				{
+					var g = new FlxSprite(-100 + (3055 * i), 0).loadGraphic("assets/images/title/ground.png");
+					add(g);
+				}
+				stageBounds[0].set(0, 0);
+				stageBounds[1].set(Math.pow(10, 50), 720);
+				bubbleFadeIn();
+				var capStepper:Stepper;
+				afterLoad(function()
+				{
+					capStepper = new Stepper(spr_pos(player).x, spr_pos(player).y, 1, 12, -Math.pow(10, 50), Math.pow(10, 50), 1);
+					add(capStepper);
+				});
+				new FlxTimer().start(0.01, function(tmr:FlxTimer)
+				{
+					setSpeechPos(player.x);
+					changeDebugTXT("X: [p]" + player.x + "[p]\nSpeed: [g]" + player.speed + "[g]");
+
+					arrow.x = spr_pos(player).x;
+					arrow.y = spr_pos(player).y;
+
+					capStepper.x = spr_pos(player).x;
+					capStepper.y = spr_pos(player).y - 500;
+
+					player.cap = capStepper.value;
+
+					/*if (player.x > (gnd.x + gnd.width * 1.6))
+							gnd.x = player.x + 1221;
+						if (player.x > (gnd2.x + gnd2.width * 1.6))
+							gnd2.x = player.x + 1221; */
+
+					tmr.reset();
+				});
 			case "shop":
 				playerPos.set(530, 445);
 

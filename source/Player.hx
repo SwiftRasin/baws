@@ -8,14 +8,12 @@ import flixel.util.FlxTimer;
 
 class Player extends FlxSprite
 {
-	/*var variants:Array<Dynamic> = [
-			{
-				name: 'The Rager',
-				asset: 'rager',
-				speed: 1,
-				jump_height: 5
-			}
-		]; */ // old unused stuff from other game
+	public var speed:Float = 0;
+
+	public var inc:Float = 0.2;
+
+	public var cap:Float = 12;
+
 	var char:String = '';
 
 	public var offsets:Map<String, FlxPoint>;
