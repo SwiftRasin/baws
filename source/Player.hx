@@ -90,6 +90,7 @@ class Player extends FlxSprite
 				animation.addByPrefix('shock', 'shock!', 24, false);
 				animation.addByPrefix('smile', 'smile', 24, false);
 				animation.addByPrefix('sus', 'runningg', 24, false);
+				// yippee
 
 				offsets = [
 					"idle" => new FlxPoint(0, 0),
