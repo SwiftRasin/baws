@@ -48,6 +48,10 @@ class PlayState extends FlxState
 
 	var tasks:Array<Dynamic> = [];
 
+	var onGnd:Bool = true;
+
+	var gndY:Float = 0;
+
 	override public function create()
 	{
 		FlxG.watch.add(FlxG.mouse, "x");
@@ -111,6 +115,7 @@ class PlayState extends FlxState
 			tasks[i]();
 			trace("task " + i + " done!");
 		}
+		gndY = player.y;
 	}
 
 	public function setSpeechPos(x:Float, y:Float = 175)
@@ -217,6 +222,27 @@ class PlayState extends FlxState
 			player.flipX = false;
 			player.playAnim("idle");
 			player.speed = 0;
+		}
+
+		player.jumpSpeed -= 0.5;
+
+		if (FlxG.keys.justPressed.SPACE && onGnd)
+		{
+			player.y -= 5;
+			player.jumpSpeed = 10;
+			onGnd = false;
+		}
+
+		if (!onGnd)
+		{
+			player.y -= player.jumpSpeed;
+			player.playAnim("jump");
+			if (player.y > gndY)
+			{
+				player.y = gndY;
+				onGnd = true;
+				player.jumpSpeed = 0;
+			}
 		}
 
 		super.update(elapsed);

@@ -14,6 +14,8 @@ class Player extends FlxSprite
 
 	public var cap:Float = 24;
 
+	public var jumpSpeed:Float = 0;
+
 	var char:String = '';
 
 	public var offsets:Map<String, FlxPoint>;
@@ -87,6 +89,7 @@ class Player extends FlxSprite
 				animation.addByPrefix('run', 'Walking Suit RUN', 24, true);
 				animation.addByPrefix('dizzy', 'Walking Suit BREAK', 24, true);
 				animation.addByPrefix('jump', 'Jump Suit', 24, true);
+				animation.addByPrefix('land', 'abt to land', 24, true);
 				animation.addByPrefix('shock', 'shock!', 24, false);
 				animation.addByPrefix('smile', 'smile', 24, false);
 				animation.addByPrefix('sus', 'runningg', 24, false);
@@ -94,8 +97,8 @@ class Player extends FlxSprite
 
 				offsets = [
 					"idle" => new FlxPoint(0, 0),
-					"shock" => new FlxPoint(0, 52),
-					"run" => new FlxPoint(70, 0)
+					"shock" => new FlxPoint(0, 52) /*,
+						"run" => new FlxPoint(70, 0) */
 				];
 
 				playAnim('idle');
