@@ -109,6 +109,7 @@ class PlayState extends FlxState
 		for (i in 0...tasks.length)
 		{
 			tasks[i]();
+			trace("task " + i + " done!");
 		}
 	}
 
@@ -186,7 +187,12 @@ class PlayState extends FlxState
 		if (FlxG.keys.pressed.LEFT && move(-5))
 		{
 			player.flipX = true;
-			player.playAnim("walk");
+			if (player.speed < -15)
+				player.playAnim("run");
+			else if (player.speed > 15)
+				player.playAnim("dizzy");
+			else
+				player.playAnim("walk");
 			if (player.speed > -player.cap)
 				player.speed -= (player.inc);
 			if (player.speed < -player.cap)
@@ -195,7 +201,12 @@ class PlayState extends FlxState
 		else if (FlxG.keys.pressed.RIGHT && move(5))
 		{
 			player.flipX = false;
-			player.playAnim("walk");
+			if (player.speed > 15)
+				player.playAnim("run");
+			else if (player.speed < -15)
+				player.playAnim("dizzy");
+			else
+				player.playAnim("walk");
 			if (player.speed < player.cap)
 				player.speed += (player.inc);
 			if (player.speed > player.cap)
@@ -275,6 +286,48 @@ class PlayState extends FlxState
 				add(bg);
 				gnd = new FlxSprite(-100, 0).loadGraphic("assets/images/title/ground.png");
 				add(gnd);
+			case "mirror":
+				FlxG.sound.playMusic(Files.ost("Fields - New Beginnings"));
+				bg = new FlxSprite(0, 0).makeGraphic(1280, 720, FlxColor.WHITE);
+				bg.scrollFactor.set(0, 0);
+				add(bg);
+				gnd = new FlxSprite(-100, 620).loadGraphic("assets/images/mirror/gnd.png");
+				add(gnd);
+				for (i in 0...500)
+				{
+					var g = new FlxSprite(-100 + (2534 * i), 620).loadGraphic("assets/images/mirror/gnd.png");
+					add(g);
+				}
+				stageBounds[0].set(0, 0);
+				stageBounds[1].set(Math.pow(10, 50), 720);
+				bubbleFadeIn();
+				var capStepper:Stepper;
+				afterLoad(function()
+				{
+					capStepper = new Stepper(bubble.x + bubble.width * 0.2, spr_pos(player).y, 1, player.cap, -Math.pow(10, 50), Math.pow(10, 50));
+					add(capStepper);
+					// capStepper.width *= 2;
+				});
+				new FlxTimer().start(0, function(tmr:FlxTimer)
+				{
+					setSpeechPos(player.x);
+					changeDebugTXT("X: [p]" + player.x + "[p]\nSpeed: [g]" + player.speed + "[g]");
+
+					arrow.x = spr_pos(player).x;
+					arrow.y = spr_pos(player).y;
+
+					capStepper.x = bubble.x + bubble.width * 0.2;
+					capStepper.y = spr_pos(player).y - 100;
+
+					player.cap = capStepper.value;
+
+					/*if (player.x > (gnd.x + gnd.width * 1.6))
+							gnd.x = player.x + 1221;
+						if (player.x > (gnd2.x + gnd2.width * 1.6))
+							gnd2.x = player.x + 1221; */
+
+					tmr.reset();
+				});
 			case "run-cutscene":
 				FlxG.sound.playMusic(Files.ost("Fields - New Beginnings"));
 				bg = new FlxSprite(0, 0).loadGraphic("assets/images/title/bg.png");
@@ -293,10 +346,11 @@ class PlayState extends FlxState
 				var capStepper:Stepper;
 				afterLoad(function()
 				{
-					capStepper = new Stepper(spr_pos(player).x, spr_pos(player).y, 1, 12, -Math.pow(10, 50), Math.pow(10, 50), 1);
+					capStepper = new Stepper(bubble.x + bubble.width * 0.2, spr_pos(player).y, 1, player.cap, -Math.pow(10, 50), Math.pow(10, 50));
 					add(capStepper);
+					// capStepper.width *= 2;
 				});
-				new FlxTimer().start(0.01, function(tmr:FlxTimer)
+				new FlxTimer().start(0, function(tmr:FlxTimer)
 				{
 					setSpeechPos(player.x);
 					changeDebugTXT("X: [p]" + player.x + "[p]\nSpeed: [g]" + player.speed + "[g]");
@@ -304,8 +358,8 @@ class PlayState extends FlxState
 					arrow.x = spr_pos(player).x;
 					arrow.y = spr_pos(player).y;
 
-					capStepper.x = spr_pos(player).x;
-					capStepper.y = spr_pos(player).y - 500;
+					capStepper.x = bubble.x + bubble.width * 0.2;
+					capStepper.y = spr_pos(player).y - 100;
 
 					player.cap = capStepper.value;
 

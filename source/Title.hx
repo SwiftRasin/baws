@@ -17,6 +17,7 @@ class Title extends FlxState
 
 	override public function create()
 	{
+		FlxG.sound.muteKeys = [NUMPADZERO]; // Remove 0;
 		// Files.setDefaultFont("Cabin Regular");
 		bg = new FlxSprite(0, 0).loadGraphic("assets/images/title/bg.png");
 		add(bg);
@@ -42,7 +43,7 @@ class Title extends FlxState
 	{
 		if (FlxG.keys.justPressed.ENTER)
 		{
-			PlayState.curStage = "run-cutscene";
+			PlayState.curStage = "mirror";
 			FlxG.switchState(new PlayState());
 		}
 		super.update(elapsed);
