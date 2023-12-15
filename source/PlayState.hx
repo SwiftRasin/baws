@@ -236,7 +236,10 @@ class PlayState extends FlxState
 		if (!onGnd)
 		{
 			player.y -= player.jumpSpeed;
-			player.playAnim("jump");
+			if (Math.abs(player.speed) > 15)
+				player.playAnim("fly");
+			else
+				player.playAnim("jump");
 			if (player.y > gndY)
 			{
 				player.y = gndY;

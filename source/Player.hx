@@ -89,6 +89,7 @@ class Player extends FlxSprite
 				animation.addByPrefix('run', 'Walking Suit RUN', 24, true);
 				animation.addByPrefix('dizzy', 'Walking Suit BREAK', 24, true);
 				animation.addByPrefix('jump', 'Jump Suit', 24, true);
+				animation.addByPrefix('fly', 'Walking Suit FLY', 24, true);
 				animation.addByPrefix('land', 'abt to land', 24, true);
 				animation.addByPrefix('shock', 'shock!', 24, false);
 				animation.addByPrefix('smile', 'smile', 24, false);
