@@ -192,12 +192,15 @@ class PlayState extends FlxState
 		if (FlxG.keys.pressed.LEFT && move(-5))
 		{
 			player.flipX = true;
-			if (player.speed < -15)
-				player.playAnim("run");
-			else if (player.speed > 15)
-				player.playAnim("dizzy");
-			else
-				player.playAnim("walk");
+			if (onGnd)
+			{
+				if (player.speed < -15)
+					player.playAnim("run");
+				else if (player.speed > 15)
+					player.playAnim("dizzy");
+				else
+					player.playAnim("walk");
+			}
 			if (player.speed > -player.cap)
 				player.speed -= (player.inc);
 			if (player.speed < -player.cap)
@@ -206,12 +209,15 @@ class PlayState extends FlxState
 		else if (FlxG.keys.pressed.RIGHT && move(5))
 		{
 			player.flipX = false;
-			if (player.speed > 15)
-				player.playAnim("run");
-			else if (player.speed < -15)
-				player.playAnim("dizzy");
-			else
-				player.playAnim("walk");
+			if (onGnd)
+			{
+				if (player.speed > 15)
+					player.playAnim("run");
+				else if (player.speed < -15)
+					player.playAnim("dizzy");
+				else
+					player.playAnim("walk");
+			}
 			if (player.speed < player.cap)
 				player.speed += (player.inc);
 			if (player.speed > player.cap)
@@ -220,17 +226,9 @@ class PlayState extends FlxState
 		else // if (player.animation.curAnim.name == "walk")
 		{
 			player.flipX = false;
-			player.playAnim("idle");
+			if (onGnd)
+				player.playAnim("idle");
 			player.speed = 0;
-		}
-
-		player.jumpSpeed -= 0.5;
-
-		if (FlxG.keys.justPressed.SPACE && onGnd)
-		{
-			player.y -= 5;
-			player.jumpSpeed = 10;
-			onGnd = false;
 		}
 
 		if (!onGnd)
@@ -246,6 +244,18 @@ class PlayState extends FlxState
 				onGnd = true;
 				player.jumpSpeed = 0;
 			}
+		}
+
+		if (Math.abs(player.speed) > 15)
+			player.jumpSpeed -= 0.3;
+		else
+			player.jumpSpeed -= 0.5;
+
+		if (FlxG.keys.justPressed.SPACE && onGnd)
+		{
+			player.y -= 5;
+			player.jumpSpeed = 10;
+			onGnd = false;
 		}
 
 		super.update(elapsed);
