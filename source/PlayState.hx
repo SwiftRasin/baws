@@ -458,7 +458,7 @@ class PlayState extends FlxState
 				add(desk);
 
 			case "mountains":
-				FlxG.sound.playMusic(Files.ost("Mountains"));
+				// FlxG.sound.playMusic(Files.ost("Mountains"));
 				bg = new FlxSprite(0, 0).loadGraphic("assets/images/mountains/bg.png");
 				bg.scrollFactor.x = 0.05;
 				bg.screenCenter();
@@ -485,6 +485,7 @@ class PlayState extends FlxState
 							bubbleFadeColor(0.2, 0xFF4b1818);
 							changeDebugTXT("Stay away from him. He's done some pretty bad things.");
 							player.playAnim("shock");
+							FlxG.sound.play(Files.sound("twist"));
 						case 4:
 							player.playAnim("idle");
 							/*

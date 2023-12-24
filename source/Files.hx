@@ -47,4 +47,9 @@ class Files
 	{
 		return "assets/music/" + mus + ".ogg";
 	}
+
+	public static function sound(snd)
+	{
+		return "assets/sounds/" + snd + ".ogg";
+	}
 }
